@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+  <form id="miFormulario">
+    <input type="email" placeholder="Email" id="txtEmail" />
+    <button type="submit">Registrarse</button>
+  </form>
+
+  <script>
+    const form = document.getElementById('miFormulario');
+    
+    // addEventListener
+    form.addEventListener('submit', function(event) {
+      // PREVENT DEFAULT impide que la pág se recargue (nos deja mandar el pedido asincrónicamente por Fetch/Axios)
+      event.preventDefault(); 
+      
+      const email = document.getElementById('txtEmail').value;
+      console.log('Email capurado:', email);
+      // Acá conectaremos con el Backend la próxima semana
+    });
+  </script>
+</body>
+</html>
