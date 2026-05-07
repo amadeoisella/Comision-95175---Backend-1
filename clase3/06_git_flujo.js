@@ -2,9 +2,6 @@
 // ══════════════════════════════════════════════════
 // DEMO — Git y GitHub: Flujo de trabajo profesional
 // ══════════════════════════════════════════════════
-// 🗣️ "Git es el seguro de vida de su código. Permite volver en el tiempo,
-//     trabajar en equipo sin pisarse, y mostrar su historial a reclutadores."
-//
 // ✍️ HACER EN TERMINAL (son comandos de Git, no de Node):
 //
 // ══════════════════════════════════════════════════
@@ -78,6 +75,6 @@
 // 🗣️ "Regla de oro: NUNCA commiteen directamente a main en un proyecto de equipo.
 //     Creen una rama, trabajen ahí, y abren un Pull Request para que alguien revise."
 
-console.log('📚 Este archivo es tu guía de referencia de Git.');
-console.log('   Léelo cada vez que te olvides un comando.');
-console.log('   Correlo con: node 06_git_flujo.js');
+console.log("📚 Este archivo es tu guía de referencia de Git.");
+console.log("   Léelo cada vez que te olvides un comando.");
+console.log("   Correlo con: node 06_git_flujo.js");
