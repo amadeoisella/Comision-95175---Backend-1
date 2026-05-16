@@ -1,0 +1,25 @@
+<h2>Hola, {{usuario.nombre}}!</h2>
+
+{{#if (eq usuario.rol "admin")}}
+  <p style="color: red;">Eres administrador</p>
+{{/if}}
+
+{{#if esAdmin}}
+  <p style="color: green;">Modo Administrador Activado</p>
+{{else}}
+  <p style="color: blue;">Modo Usuario Normal</p>
+{{/if}}
+
+<hr />
+
+<h3>Nuestros Productos</h3>
+
+{{#if hayProductos}}
+  <ul>
+    {{#each productos}}
+      <li>{{this.nombre}} - ${{this.precio}}</li>
+    {{/each}}
+  </ul>
+{{else}}
+  <p>No hay stock</p>
+{{/if}}
