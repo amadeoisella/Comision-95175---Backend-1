@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cliente WebSocket Nativo</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+      background: #0f172a;
+      color: #cbd5e1;
+      margin: 0;
+      padding: 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 2rem;
+      width: 100%;
+      max-width: 600px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    }
+    h1 {
+      color: #f8fafc;
+      font-size: 1.5rem;
+      margin-top: 0;
+      border-bottom: 2px solid #334155;
+      padding-bottom: 0.5rem;
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+    }
+    .badge-disconnected {
+      background: #991b1b;
+      color: #fca5a5;
+    }
+    .badge-connected {
+      background: #065f46;
+      color: #6ee7b7;
+    }
+    .control-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 1.5rem;
+    }
+    button {
+      background: #3b82f6;
+      border: none;
+      color: #fff;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    button:hover:not(:disabled) {
+      background: #2563eb;
+    }
+    button:disabled {
+      background: #475569;
+      color: #94a3b8;
+      cursor: not-allowed;
+    }
+    #btnDisconnect {
+      background: #ef4444;
+    }
+    #btnDisconnect:hover:not(:disabled) {
+      background: #dc2626;
+    }
+    .input-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 1.5rem;
+    }
+    input {
+      flex: 1;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      padding: 0.5rem;
+      color: #f8fafc;
+      font-size: 1rem;
+    }
+    input:focus {
+      outline: 2px solid #3b82f6;
+    }
+    .console {
+      background: #090d16;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 1rem;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9rem;
+      height: 200px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      color: #10b981;
+    }
+    .log-entry {
+      margin-bottom: 0.4rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 0.2rem;
+    }
+    .log-info { color: #38bdf8; }
+    .log-success { color: #34d399; }
+    .log-error { color: #f87171; }
+    .log-sent { color: #fbbf24; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔌 Cliente WebSocket Nativo</h1>
+    <div id="statusBadge" class="badge badge-disconnected">DESCONECTADO</div>
+    
+    <div class="control-row">
+      <button id="btnConnect" onclick="connect()">🔌 Conectar al Servidor</button>
+      <button id="btnDisconnect" onclick="disconnect()" disabled>❌ Desconectar</button>
+    </div>
+
+    <div class="input-row">
+      <input type="text" id="txtMessage" placeholder="Escribe un mensaje para enviar..." disabled onkeydown="if(event.key==='Enter') sendMessage()"/>
+      <button id="btnSend" onclick="sendMessage()" disabled>📩 Enviar</button>
+    </div>
+
+    <h3>📜 Consola de Eventos:</h3>
+    <div id="consoleLog" class="console">
+      <div class="log-entry log-info">&gt;&gt; Presiona "Conectar" para iniciar el Handshake HTTP -> WebSocket...</div>
+    </div>
+  </div>
+
+  <script>
+    let socket;
+    const btnConnect = document.getElementById('btnConnect');
+    const btnDisconnect = document.getElementById('btnDisconnect');
+    const btnSend = document.getElementById('btnSend');
+    const txtMessage = document.getElementById('txtMessage');
+    const statusBadge = document.getElementById('statusBadge');
+    const consoleLog = document.getElementById('consoleLog');
+
+    function log(message, type = 'info') {
+      const entry = document.createElement('div');
+      entry.className = `log-entry log-${type}`;
+      entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+      consoleLog.appendChild(entry);
+      consoleLog.scrollTop = consoleLog.scrollHeight;
+    }
+
+    function connect() {
+      log('Iniciando handshake WebSocket con ws://localhost:8080...', 'info');
+      socket = new WebSocket('ws://localhost:8080');
+
+      socket.onopen = (event) => {
+        log('¡Conexión abierta con éxito! Handshake completado (Upgrade: websocket).', 'success');
+        statusBadge.textContent = 'CONECTADO';
+        statusBadge.className = 'badge badge-connected';
+        
+        btnConnect.disabled = true;
+        btnDisconnect.disabled = false;
+        btnSend.disabled = false;
+        txtMessage.disabled = false;
+        txtMessage.focus();
+      };
+
+      socket.onmessage = (event) => {
+        log(`📥 Recibido del Servidor: ${event.data}`, 'success');
+      };
+
+      socket.onclose = (event) => {
+        log(`🔌 Conexión cerrada. Código: ${event.code}. Limpio: ${event.wasClean}`, 'error');
+        statusBadge.textContent = 'DESCONECTADO';
+        statusBadge.className = 'badge badge-disconnected';
+        
+        btnConnect.disabled = false;
+        btnDisconnect.disabled = true;
+        btnSend.disabled = true;
+        txtMessage.disabled = true;
+      };
+
+      socket.onerror = (error) => {
+        log(`⚠️ Error detectado en el Socket nativo.`, 'error');
+      };
+    }
+
+    function disconnect() {
+      if (socket) {
+        log('Cerrando conexión voluntariamente...', 'info');
+        socket.close();
+      }
+    }
+
+    function sendMessage() {
+      const msg = txtMessage.value.trim();
+      if (!msg) return;
+      
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.send(msg);
+        log(`📤 Enviado al Servidor: "${msg}"`, 'sent');
+        txtMessage.value = '';
+        txtMessage.focus();
+      } else {
+        log('❌ Error: El WebSocket no está abierto.', 'error');
+      }
+    }
+  </script>
+</body>
+</html>

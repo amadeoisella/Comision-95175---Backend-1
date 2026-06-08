@@ -1,0 +1,9 @@
+{
+  "name": "03-cli-simulation",
+  "version": "1.0.0",
+  "description": "Simulación CLI de procesamiento de mensajes de chat vía stdin",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  }
+}
