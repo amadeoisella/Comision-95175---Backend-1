@@ -1,0 +1,12 @@
+{
+  "name": "01-mongoose-demo",
+  "version": "1.0.0",
+  "description": "Ejercicio CRUD interactivo con Mongoose y MongoDB",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "mongoose": "^8.3.1"
+  }
+}
