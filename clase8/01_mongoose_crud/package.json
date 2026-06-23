@@ -1,0 +1,17 @@
+{
+  "name": "01_mongoose_crud",
+  "version": "1.0.0",
+  "description": "API REST con Express y Mongoose para gestión de productos",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node test_api.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mongoose": "^8.3.1"
+  }
+}
